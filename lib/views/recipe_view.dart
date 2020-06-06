@@ -39,7 +39,7 @@ class _RecipeViewState extends State<RecipeView> {
         child: Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.only(top: Platform.isIOS? 60: 30, right: 24,left: 24,bottom: 16),
+              padding: EdgeInsets.only(top: Platform.isAndroid? 60: 30, right: 24,left: 24,bottom: 16),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   gradient: LinearGradient(

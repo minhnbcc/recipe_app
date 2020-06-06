@@ -27,6 +27,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.pink[300],
+        title: Text('Food Recipes'),
+      ),
       body: Stack(
         children: <Widget>[
           Container(
@@ -34,45 +38,23 @@ class _HomeState extends State<Home> {
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [
-                  const Color(0xff213A50),
-                  const Color(0xff071930)
-                ],
+                    colors: [Colors.teal[800], Colors.teal[400]],
                     begin: FractionalOffset.topRight,
                     end: FractionalOffset.bottomLeft)),
           ),
           SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: !kIsWeb ? Platform.isIOS? 60: 30 : 30, horizontal: 24),
+              padding: EdgeInsets.symmetric(
+                  vertical: !kIsWeb ? Platform.isAndroid ? 60 : 30 : 30,
+                  horizontal: 48),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: kIsWeb
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "AppGuy",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontFamily: 'Overpass'),
-                      ),
-                      Text(
-                        "Recipes",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.blue,
-                            fontFamily: 'Overpass'),
-                      )
-                    ],
-                  ),
                   SizedBox(
                     height: 60,
                   ),
                   Text(
-                    "What will you cook today?",
+                    "What would you like to cook today?",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -80,9 +62,17 @@ class _HomeState extends State<Home> {
                         fontFamily: 'Overpass'),
                   ),
                   Text(
-                    "Just Enter Ingredients you have and we will show the best recipe for you",
+                    "Please Enter Ingredients you prefer",
                     style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w300,
+                        fontFamily: 'OverpassRegular'),
+                  ),
+                  Text(
+                    "We will help you to sort of recipes for having your meal shortly",
+                    style: TextStyle(
+                        fontSize: 16,
                         color: Colors.white,
                         fontWeight: FontWeight.w300,
                         fontFamily: 'OverpassRegular'),
@@ -101,10 +91,10 @@ class _HomeState extends State<Home> {
                                 color: Colors.white,
                                 fontFamily: 'Overpass'),
                             decoration: InputDecoration(
-                              hintText: "Enter Ingridients",
+                              hintText: "Search recipes",
                               hintStyle: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.white.withOpacity(0.5),
+                                  color: Colors.grey[800].withOpacity(0.5),
                                   fontFamily: 'Overpass'),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.white),
@@ -149,25 +139,23 @@ class _HomeState extends State<Home> {
                                 print("not doing it");
                               }
                             },
+                            splashColor: Colors.blueAccent,
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8),
                                   gradient: LinearGradient(
                                       colors: [
-                                    const Color(0xffA2834D),
-                                    const Color(0xffBC9A5F)
-                                  ],
+                                        Colors.blue[600],
+                                        Colors.blue[100]
+                                      ],
                                       begin: FractionalOffset.topRight,
                                       end: FractionalOffset.bottomLeft)),
                               padding: EdgeInsets.all(8),
                               child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                                mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
-                                  Icon(
-                                    Icons.search,
-                                    size: 18,
-                                      color: Colors.white
-                                  ),
+                                  Icon(Icons.search,
+                                      size: 18, color: Colors.white),
                                 ],
                               ),
                             )),
@@ -177,22 +165,30 @@ class _HomeState extends State<Home> {
                   SizedBox(
                     height: 30,
                   ),
-                  Container(
-                    child: GridView(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                            mainAxisSpacing: 10.0, maxCrossAxisExtent: 200.0),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        physics: ClampingScrollPhysics(),
-                        children: List.generate(recipies.length, (index) {
-                          return GridTile(
-                              child: RecipieTile(
-                            title: recipies[index].label,
-                            imgUrl: recipies[index].image,
-                            desc: recipies[index].source,
-                            url: recipies[index].url,
-                          ));
-                        })),
+                  Wrap(
+                    children: <Widget>[
+                      GridView(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            mainAxisSpacing: 15.0,
+                            maxCrossAxisExtent: 200,
+                            crossAxisSpacing: 10.0,
+                         
+                            
+                          ),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          physics: ClampingScrollPhysics(),
+                          children: List.generate(recipies.length, (index) {
+                            return GridTile(
+                                child: RecipieTile(
+                              title: recipies[index].label,
+                              imgUrl: recipies[index].image,
+                              desc: recipies[index].source,
+                              url: recipies[index].url,
+                            ));
+                          }))
+                    ],
                   ),
                 ],
               ),
@@ -225,68 +221,108 @@ class _RecipieTileState extends State<RecipieTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            if (kIsWeb) {
-              _launchURL(widget.url);
-            } else {
-              print(widget.url + " this is what we are going to see");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => RecipeView(
-                            postUrl: widget.url,
-                          )));
-            }
-          },
-          child: Container(
-            margin: EdgeInsets.all(8),
-            child: Stack(
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Card(
+            child: Wrap(
               children: <Widget>[
-                Image.network(
-                  widget.imgUrl,
-                  height: 200,
-                  width: 200,
-                  fit: BoxFit.cover,
-                ),
-                Container(
-                  width: 200,
-                  alignment: Alignment.bottomLeft,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.white30, Colors.white],
-                          begin: FractionalOffset.centerRight,
-                          end: FractionalOffset.centerLeft)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          widget.title,
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black54,
-                              fontFamily: 'Overpass'),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, left: 10, bottom: 10, right: 10),
+                  child: GestureDetector(
+                    child: InkWell(
+                      onTap: () {
+                        if (kIsWeb) {
+                          _launchURL(widget.url);
+                        } else {
+                          print(
+                              widget.url + " this is what we are going to see");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RecipeView(
+                                        postUrl: widget.url,
+                                      )));
+                        }
+                      },
+                      splashColor: Colors.blueAccent,
+                      child: Container(
+                        margin: EdgeInsets.all(16),
+                        child: Stack(
+                          children: <Widget>[
+                            SingleChildScrollView(
+                              child: Image.network(
+                                widget.imgUrl,
+                                height: 200,
+                                width: 300,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+
+                            Container(
+                              width: 200,
+                              alignment: Alignment.bottomLeft,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [Colors.white30, Colors.white],
+                                      begin: FractionalOffset.centerRight,
+                                      end: FractionalOffset.centerLeft)),
+                            ),
+                            // Padding(
+                            //     padding: const EdgeInsets.all(10.0),
+
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  // height: 0,
+                                  width: 250.0,
+                                  padding: const EdgeInsets.only(
+                                      top: 220,
+                                      left: 50,
+                                      bottom: 200,
+                                      right: 0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        widget.title,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.black54,
+                                            fontFamily: 'Overpass'),
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Text(
+                                        widget.desc,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black54,
+                                            fontFamily: 'OverpassRegular'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            // ),
+                          ],
                         ),
-                        Text(
-                          widget.desc,
-                          style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.black54,
-                              fontFamily: 'OverpassRegular'),
-                        )
-                      ],
+                      ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -306,7 +342,7 @@ class GradientCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: Wrap(
         children: <Widget>[
           Container(
@@ -330,7 +366,7 @@ class GradientCard extends StatelessWidget {
                           begin: FractionalOffset.centerRight,
                           end: FractionalOffset.centerLeft)),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: <Widget>[
                         Text(
